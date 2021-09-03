@@ -357,12 +357,11 @@ open Newtonsoft.Json.Schema
 let licenseSchema = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/license.schema.json" |> JSchema.Parse
 let ccLicense = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/CCAtt4IPL.json" |> JObject.Parse
 
-// We need to define a mutable value "messages". When validating the JSON file by our Schema possible error messages will be written into "messages".
-let mutable messages = new System.Collections.Generic.List<string>() :> System.Collections.Generic.IList<string>
-let valid = ccLicense.IsValid(licenseSchema, errorMessages = &messages)
-
-valid, messages
-(*** include-it ***)
+// We match the outcome of the IsValid method to get error messages, if available.
+match (ccLicense.IsValid(licenseSchema)) : (bool * #seq<string>) with
+| (false,msg) -> printfn "not valid due to: %A" msg
+| _ -> printfn "valid"
+(*** include-output ***)
 
 (**
 
@@ -373,9 +372,10 @@ When giving it a closer look, we see that the required properties "author" and "
 
 let ccLicenseNew = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/CCAtt4IPL_new.json" |> JObject.Parse
 
-let valid2 = ccLicenseNew.IsValid(licenseSchema, errorMessages = &messages)
-valid2, messages
-(*** include-it ***)
+match (ccLicenseNew.IsValid(licenseSchema)) : (bool * #seq<string>) with
+| (false,msg) -> printfn "not valid due to: %A" msg
+| _ -> printfn "valid"
+(*** include-output ***)
 
 (**
 
@@ -384,14 +384,15 @@ Since this Schema references another one, we need a resolver:
 
 *)
 
-let resolver = new JSchemaUrlResolver()
+let resolver = JSchemaUrlResolver()
 
 let blogpostSchema = JSchema.Parse(Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json", resolver)
 let blogpost0 = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost0.json" |> JObject.Parse
 
-let valid3 = blogpost0.IsValid(blogpostSchema, &messages)
-valid3, messages
-(*** include-it ***)
+match (blogpost0.IsValid(blogpostSchema)) : (bool * #seq<string>) with
+| (false,msg) -> printfn "not valid due to: %A" msg
+| _ -> printfn "valid"
+(*** include-output ***)
 
 (**
 
