@@ -18,7 +18,7 @@ index: 0
 - [JSON syntax](#JSON-syntax)
 - [The basic structure of a JSON Schema](#The-basic-structure-of-a-JSON-Schema)
 - [References](#References)
-- [Validation of JSON files with a Schema]
+- [Validation of JSON files by a Schema](#Validation-of-JSON-files-by-a-Schema)
 - [Further reading](#Further-reading)
 
 ## What are JSON Schemas?
@@ -339,7 +339,7 @@ Let's look at the finished JSON file for this blogpost:
 }
 ```
 
-## Validation of JSON files from a Schema
+## Validation of JSON files by a Schema
 
 The Newtonsoft.Json library provides great JSON Schema support regarding validating your JSON files by a given Schema.
 
@@ -360,12 +360,14 @@ let ccLicense = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSB
 // We need to define a mutable value "messages". When validating the JSON file by our Schema possible error messages will be written into "messages".
 let mutable messages = new System.Collections.Generic.List<string>() :> System.Collections.Generic.IList<string>
 let valid = ccLicense.IsValid(licenseSchema, errorMessages = &messages)
+
 valid, messages
+(*** include-it ***)
 
 (**
 
 Oh no, our file seems to be invalid.  
-When giving it a closer look, we see that the required properties "author" and "date" are set to null. Thus, we replace them with empty strings:
+When giving it a closer look, we see that the required properties "author" and "date" are set to null. Thus, we replace them with empty strings and start anew.
 
 *)
 
@@ -373,23 +375,32 @@ let ccLicenseNew = Http.RequestString @"https://raw.githubusercontent.com/omaus/
 
 let valid2 = ccLicenseNew.IsValid(licenseSchema, errorMessages = &messages)
 valid2, messages
+(*** include-it ***)
 
 (**
 
-Let's now test this with our blogpost Schema and the corresponding JSON file:
+Let's now test this with our blogpost Schema and the corresponding JSON file.  
+Since this Schema references another one, we need a resolver:
 
 *)
 
-let blogpostSchema = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json" |> JSchema.Parse
+let resolver = new JSchemaUrlResolver()
+
+let blogpostSchema = JSchema.Parse(Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json", resolver)
 let blogpost0 = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost0.json" |> JObject.Parse
 
 let valid3 = blogpost0.IsValid(blogpostSchema, &messages)
 valid3, messages
+(*** include-it ***)
 
 (**
 
 ## Further reading
 
 - [Understanding JSON](https://json-schema.org/understanding-json-schema/index.html)
+- [Official JSON Schema Homepage](https://json-schema.org/)
+- [Schema Core Specification](https://json-schema.org/draft/2020-12/json-schema-core.html)
+- [Schema Validation Specification](https://json-schema.org/draft/2020-12/json-schema-validation.html)
+- [Relative JSON pointers Specification](https://json-schema.org/draft/2020-12/relative-json-pointer.html)
 
 *)
