@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/blogpost.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json",
   "title": "Blogpost entry",
   "description": "An entry of our blogpost series, consisting of an identifier, a title, a category, the upload status, and some tags.",
   "type": "object",
@@ -48,8 +48,8 @@
     },
     "license": {
       "description": "The license used for a blogpost entry.",
-      "$ref": "https://github.com/omaus/CSBlog/license.schema.json"
+      "$ref": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/license.schema.json"
     }
   },
-  "required":  [ "identifier", "title", "category", "authors", "license" ]
+  "required": [ "identifier", "title", "category", "authors", "license" ]
 }

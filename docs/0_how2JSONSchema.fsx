@@ -69,7 +69,7 @@ JSON Schemas must start with 2 unique key/value pairs that are referencing them 
 ```javascript
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/blogpost.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json",
 }
 ```
 
@@ -82,7 +82,7 @@ There's more to add: Our JSON Schema needs a title and a description:
 ```javascript
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/blogpost.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json",
   "title": "Blogpost entry",
   "description": "An entry of our blogpost series, consisting of an identifier, a title, a category, the upload status, and some tags.",
 }
@@ -94,7 +94,7 @@ The last thing to add is a so-called "Validation keyword":
 ```javascript
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/blogpost.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json",
   "title": "Blogpost entry",
   "description": "An entry of our blogpost series, consisting of an identifier, a title, a category, the upload status, and some tags.",
   "type": "object"
@@ -109,7 +109,7 @@ Now, since we wrote the "metadata" of our JSON Schema, we want to add the proper
 ```javascript
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/blogpost.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json",
   "title": "Blogpost entry",
   "description": "An entry of our blogpost series, consisting of an identifier, a title, a category, the upload status, and some tags.",
   "type": "object",
@@ -169,7 +169,7 @@ There's something new: We now must add a nested type to our Schema:
 ```javascript
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/blogpost.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json",
   "title": "Blogpost entry",
   "description": "An entry of our blogpost series, consisting of an identifier, a title, a category, the upload status, and some tags.",
   "type": "object",
@@ -229,7 +229,7 @@ There's already a JSON Schema for licenses. So we want to incorporate it into ou
 ```javascript
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/license.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/license.schema.json",
   "title": "Copyright license",
   "description": "A license regarding copyright",
   "type": "object",
@@ -260,7 +260,7 @@ Our new Blogpost Schema:
 ```javascript
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/omaus/CSBlog/blogpost.schema.json",
+  "$id": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json",
   "title": "Blogpost entry",
   "description": "An entry of our blogpost series, consisting of an identifier, a title, a category, the upload status, and some tags.",
   "type": "object",
@@ -308,7 +308,7 @@ Our new Blogpost Schema:
     },
     "license": {
       "description": "The license used for a blogpost entry.",
-      "$ref": "https://github.com/omaus/CSBlog/license.schema.json"
+      "$ref": "https://raw.githubusercontent.com/omaus/CSBlogpost/main/license.schema.json"
     }
   },
   "required":  [ "identifier", "title", "category", "authors", "license" ]
@@ -355,8 +355,8 @@ open Newtonsoft.Json.Linq
 open Newtonsoft.Json.Schema
 
 // We download the Json strings via FSharp.Data and parse them into a JSchema or JObject, respectively.
-let licenseSchema = Http.RequestString @"" |> JSchema.Parse
-let ccLicense = Http.RequestString @"" |> JObject.Parse
+let licenseSchema = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/license.schema.json" |> JSchema.Parse
+let ccLicense = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/CCAtt4IPL.json" |> JObject.Parse
 
 // We need to define a mutable value "messages". When validating the JSON file by our Schema possible error messages will be written into "messages".
 let mutable messages = new System.Collections.Generic.List<string>() :> System.Collections.Generic.IList<string>
@@ -370,7 +370,7 @@ When giving it a closer look, we see that the required properties "author" and "
 
 *)
 
-let ccLicenseNew = Http.RequestString @"" |> JObject.Parse
+let ccLicenseNew = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/CCAtt4IPL_new.json" |> JObject.Parse
 
 let valid2 = ccLicenseNew.IsValid(licenseSchema, errorMessages = &messages)
 valid2, messages
@@ -381,7 +381,11 @@ Let's now test this with our blogpost Schema and the corresponding JSON file:
 
 *)
 
+let blogpostSchema = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost.schema.json" |> JSchema.Parse
+let blogpost0 = Http.RequestString @"https://raw.githubusercontent.com/omaus/CSBlogpost/main/blogpost0.json" |> JObject.Parse
 
+let valid3 = blogpost0.IsValid(blogpostSchema, &messages)
+valid3, messages
 
 (**
 
