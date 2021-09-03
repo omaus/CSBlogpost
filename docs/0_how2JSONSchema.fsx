@@ -350,7 +350,6 @@ The Newtonsoft.Json library provides great JSON Schema support regarding validat
 #r "nuget: Newtonsoft.Json.Schema"
 
 open FSharp.Data
-open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open Newtonsoft.Json.Schema
 
